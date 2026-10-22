@@ -1,30 +1,37 @@
-# DAMATH MathLab — Arithmetic Training
+# DAMATH MathLab — Student Training + Trainer Center
 
-A responsive, static Integer DAMATH arithmetic training website. Hosted on GitHub Pages from the `index.html` file.
+**Student website:** https://userme-cloud.github.io/Damath_with_analysis/
 
-## Publish the website
+**Trainer monitoring website:** https://userme-cloud.github.io/Damath_with_analysis/trainer/
 
-1. Open this repository in GitHub.
-2. Select **Settings → Pages**.
-3. Under **Build and deployment**, choose **Deploy from a branch**.
-4. Choose `main`, choose `/(root)`, and click **Save**.
-5. Check the **Pages** settings for the final public address. The usual address is `https://userme-cloud.github.io/Damath_with_analysis/`.
+The first site delivers integer DAMATH arithmetic drills. The separate Trainer Center summarizes participation and learning performance **only for learners who opt to share their results**.
 
-See the official [GitHub Pages instructions](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
+The sites are committed to GitHub Pages. Online data sharing is not active until you connect a Supabase project and approved trainer account. See [TRAINER_SETUP.md](TRAINER_SETUP.md) for the one-time instructions and [supabase-setup.sql](supabase-setup.sql) for secure database policies.
 
-## Trainer
+## Student training
+- Four basic operations, 576 theoretical ordered arithmetic expressions, and DAMA score variants.
+- 11 selectable modes, shuffled four-option answers, correct answers revealed immediately.
+- 20 questions by default, 3-second auto-advance, speed mode, adaptive drills, and local progress.
+- Three-jump capture chains are arithmetic sequences, **not verified legal board capture paths**.
+- Player training works even if the cloud backend is not configured.
 
-- 11 modes, including speed, accuracy, tournament, DAMA scoring, daily challenge, three-capture arithmetic totals, and remaining chip values.
-- 4 randomized multiple-choice answers, instantly checked on click.
-- Automatic next question after 3 seconds (1.5 seconds in speed mode).
-- Default 20 questions; adjustable question count and question time limit.
-- Adaptive operation selection, local training history, mistake review, performance charts, achievements, printable certificates, worksheets, and teacher fixed-seed links.
-- Keyboard shortcuts 1–4; accessible controls, sound toggle, high contrast, large text, and reduced-motion option.
+## Trainer dashboard
+- Password-protected teacher sign-in; access is server-authorized using Supabase row-level security.
+- Consenting player roster, practice days, last activity, sessions and answered questions.
+- Accurate / incorrect totals, speed, four-operation breakdown, session history and downloadable CSV.
+- Choose 7/30/90 days or all time, sort by engagement, and open individual learner reports.
+- Uses anonymous student authentication per browser; a student should use one browser profile, or separate student accounts must be added for cross-device merging.
+- Uses only the **public publishable key** in `cloud-config.js`, never a secret key.
 
-## Arithmetic convention
+## Deployment
+GitHub repository: https://github.com/Userme-cloud/Damath_with_analysis
 
-Integer chips: `0, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11`. Operands are ordered: capturing chip first, captured chip second. Division rounds to the nearest integer, with exact halves away from zero. Division by zero is **No Score (NS)**; the trainer's answer choice is `0` as requested, and NS is explicitly shown in the feedback. One DAMA uses ×2; both DAMAs use ×4. Chain questions are arithmetic-only and not a claim of legal board reachability.
+Settings → Pages → Deploy from a branch → `main` → `/(root)`.
 
-## Privacy and limitations
+## Scope and privacy
+- The trainer site is not public student reporting: approved trainers must sign in.
+- A student's consent toggle is off by default, and local training continues if they do not consent.
+- Shared summaries are useful for coaching, not tamper-proof assessments.
+- Personal information and analytics must follow your school's learner/guardian consent rules.
 
-This is a *static website*. Student names and training history are saved by the browser's local storage; **no class database, login or cross-device synchronization** is provided. Students can download their own CSV results for sharing with teachers. Fixed-seed shared tests are reproducible only when settings match. Do not treat locally recorded scores as tamper-proof competition results.
+[Full setup guide](TRAINER_SETUP.md)
