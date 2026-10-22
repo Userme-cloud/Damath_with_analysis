@@ -34,16 +34,26 @@ create table if not exists public.damath_sessions (
 create index if not exists damath_sessions_player_idx on public.damath_sessions(player_id,started_at desc);
 create index if not exists damath_sessions_recent_idx on public.damath_sessions(started_at desc);
 
-create or replace function public.damath_is_trainer()
+create schema if not exists damath_private;
+revoke all on schema damath_private from public, anon;
+grant usage on schema damath_private to authenticated;
+create or replace function damath_private.is_trainer()
 returns boolean language sql stable security definer
 set search_path = ''
-as $$
-  select exists(
-    select 1 from public.damath_trainers
-    where user_id = (select auth.uid())
-  );
-$$;
-revoke all on function public.damath_is_trainer() from public;
+as $trainer$
+  select (select auth.uid()) is not null
+    and coalesce(((select auth.jwt())->>'is_anonymous')::boolean, false) = false
+    and exists (select 1 from public.damath_trainers where user_id = (select auth.uid()));
+$trainer$;
+revoke all on function damath_private.is_trainer() from public, anon;
+grant execute on function damath_private.is_trainer() to authenticated;
+create or replace function public.damath_is_trainer()
+returns boolean language sql stable security invoker
+set search_path = ''
+as $wrapper$
+  select damath_private.is_trainer();
+$wrapper$;
+revoke all on function public.damath_is_trainer() from public, anon;
 grant execute on function public.damath_is_trainer() to authenticated;
 
 alter table public.damath_trainers enable row level security;
@@ -58,7 +68,7 @@ create policy "players own view" on public.damath_players for select to authenti
 using (player_id = (select auth.uid()));
 drop policy if exists "trainer player view" on public.damath_players;
 create policy "trainer player view" on public.damath_players for select to authenticated
-using ((select public.damath_is_trainer()) and coalesce((auth.jwt()->>'is_anonymous')::boolean,false) = false);
+using ((select damath_private.is_trainer()));
 drop policy if exists "players register consent" on public.damath_players;
 create policy "players register consent" on public.damath_players for insert to authenticated
 with check (player_id = (select auth.uid()) and (auth.jwt()->>'is_anonymous')::boolean = true);
@@ -72,7 +82,7 @@ create policy "player session read" on public.damath_sessions for select to auth
 using (player_id = (select auth.uid()));
 drop policy if exists "trainer session read" on public.damath_sessions;
 create policy "trainer session read" on public.damath_sessions for select to authenticated
-using ((select public.damath_is_trainer()) and coalesce((auth.jwt()->>'is_anonymous')::boolean,false) = false);
+using ((select damath_private.is_trainer()));
 drop policy if exists "player session create" on public.damath_sessions;
 create policy "player session create" on public.damath_sessions for insert to authenticated
 with check (player_id = (select auth.uid()) and (auth.jwt()->>'is_anonymous')::boolean = true);
@@ -81,7 +91,7 @@ create policy "player session update" on public.damath_sessions for update to au
 using (player_id = (select auth.uid()) and (auth.jwt()->>'is_anonymous')::boolean = true)
 with check (player_id = (select auth.uid()) and (auth.jwt()->>'is_anonymous')::boolean = true);
 
-revoke all on public.damath_trainers from anon,authenticated;
+revoke all on public.damath_trainers from public, anon, authenticated;
 grant select,insert,update on public.damath_players to authenticated;
 grant select,insert,update on public.damath_sessions to authenticated;
 
