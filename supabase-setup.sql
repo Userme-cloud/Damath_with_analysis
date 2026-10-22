@@ -64,32 +64,30 @@ alter table public.damath_sessions enable row level security;
 -- Anonymous signed-in players may only write/read their own records.
 -- Trainers must be registered authenticated (non-anonymous) users.
 drop policy if exists "players own view" on public.damath_players;
-create policy "players own view" on public.damath_players for select to authenticated
-using (player_id = (select auth.uid()));
 drop policy if exists "trainer player view" on public.damath_players;
-create policy "trainer player view" on public.damath_players for select to authenticated
-using ((select damath_private.is_trainer()));
+drop policy if exists "player or trainer read" on public.damath_players;
+create policy "player or trainer read" on public.damath_players for select to authenticated
+using (player_id = (select auth.uid()) or (select damath_private.is_trainer()));
 drop policy if exists "players register consent" on public.damath_players;
 create policy "players register consent" on public.damath_players for insert to authenticated
-with check (player_id = (select auth.uid()) and (auth.jwt()->>'is_anonymous')::boolean = true);
+with check (player_id = (select auth.uid()) and ((select auth.jwt())->>'is_anonymous')::boolean = true);
 drop policy if exists "players update own" on public.damath_players;
 create policy "players update own" on public.damath_players for update to authenticated
-using (player_id = (select auth.uid()) and (auth.jwt()->>'is_anonymous')::boolean = true)
-with check (player_id = (select auth.uid()) and (auth.jwt()->>'is_anonymous')::boolean = true);
+using (player_id = (select auth.uid()) and ((select auth.jwt())->>'is_anonymous')::boolean = true)
+with check (player_id = (select auth.uid()) and ((select auth.jwt())->>'is_anonymous')::boolean = true);
 
 drop policy if exists "player session read" on public.damath_sessions;
-create policy "player session read" on public.damath_sessions for select to authenticated
-using (player_id = (select auth.uid()));
 drop policy if exists "trainer session read" on public.damath_sessions;
-create policy "trainer session read" on public.damath_sessions for select to authenticated
-using ((select damath_private.is_trainer()));
+drop policy if exists "player or trainer read" on public.damath_sessions;
+create policy "player or trainer read" on public.damath_sessions for select to authenticated
+using (player_id = (select auth.uid()) or (select damath_private.is_trainer()));
 drop policy if exists "player session create" on public.damath_sessions;
 create policy "player session create" on public.damath_sessions for insert to authenticated
-with check (player_id = (select auth.uid()) and (auth.jwt()->>'is_anonymous')::boolean = true);
+with check (player_id = (select auth.uid()) and ((select auth.jwt())->>'is_anonymous')::boolean = true);
 drop policy if exists "player session update" on public.damath_sessions;
 create policy "player session update" on public.damath_sessions for update to authenticated
-using (player_id = (select auth.uid()) and (auth.jwt()->>'is_anonymous')::boolean = true)
-with check (player_id = (select auth.uid()) and (auth.jwt()->>'is_anonymous')::boolean = true);
+using (player_id = (select auth.uid()) and ((select auth.jwt())->>'is_anonymous')::boolean = true)
+with check (player_id = (select auth.uid()) and ((select auth.jwt())->>'is_anonymous')::boolean = true);
 
 revoke all on public.damath_trainers from public, anon, authenticated;
 grant select,insert,update on public.damath_players to authenticated;
