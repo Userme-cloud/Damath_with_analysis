@@ -7,7 +7,7 @@
     !!cfg.publishableKey && !/YOUR_|PLACEHOLDER/i.test(cfg.publishableKey);
   const status = message => { const target=$('cloudSyncStatus'); if(target)target.textContent=message; };
   const queueKey='damath-student-pending-v1', ownerKey='damath-student-owner-v1';
-  let client=null, flushing=false, pending={};
+  let client=null, flushing=false, rerun=false, pending={};
   try{pending=JSON.parse(localStorage.getItem(queueKey)||'{}')||{};}catch(e){pending={};}
   const persist=()=>{try{localStorage.setItem(queueKey,JSON.stringify(pending));}catch(e){}};
   if(configured && window.supabase){
@@ -52,7 +52,7 @@
     persist(); flush();
   }
   async function flush(){
-    if(!client||flushing||!navigator.onLine||!Object.keys(pending).length)return;
+    if(flushing){rerun=true;return;}if(!client||!navigator.onLine||!Object.keys(pending).length)return;
     flushing=true;
     try{
       let {data:{user},error}=await client.auth.getUser();
@@ -76,7 +76,7 @@
       status('Your opted-in training results have been sent to the trainer.');
     }catch(e){
       status('Sharing pending: '+(e.message||'connection error')+'. Local results remain saved.');
-    }finally{flushing=false;}
+    }finally{flushing=false;if(rerun){rerun=false;setTimeout(flush,500);}}
   }
   window.DAMATHCloud={
     enabled:!!client,
