@@ -6,7 +6,7 @@
 
 The first site delivers integer DAMATH arithmetic drills. The separate Trainer Center summarizes participation and learning performance **only for learners who opt to share their results**.
 
-The sites are committed to GitHub Pages. Online data sharing is not active until you connect a Supabase project and approved trainer account. See [TRAINER_SETUP.md](TRAINER_SETUP.md) for the one-time instructions and [supabase-setup.sql](supabase-setup.sql) for secure database policies.
+The student and trainer site code is committed to GitHub Pages. The Singapore Supabase project is now provisioned, its reporting tables and row-level security are installed, and `cloud-config.js` points to the project. **Before live class reporting can work, an administrator must enable anonymous student sign-ins and register/approve a trainer email-password account.** See [TRAINER_SETUP.md](TRAINER_SETUP.md) for the remaining steps and [supabase-setup.sql](supabase-setup.sql) for the installed database schema.
 
 ## Student training
 - Four basic operations, 576 theoretical ordered arithmetic expressions, and DAMA score variants.
