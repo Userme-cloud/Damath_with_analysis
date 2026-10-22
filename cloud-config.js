@@ -1,7 +1,6 @@
 // DAMATH MathLab public browser configuration.
-// Copy the Project URL and PUBLISHABLE (anon) key from your own Supabase project.
-// Never place a service_role or secret key here.
+// Only the Supabase PUBLISHABLE key is placed here. Never use a service_role or secret key.
 window.DAMATH_CLOUD_CONFIG = {
-  url: "https://YOUR-PROJECT.supabase.co",
-  publishableKey: "YOUR_SUPABASE_PUBLISHABLE_KEY"
+  url: "https://onkaculwnkodqglmqiaw.supabase.co",
+  publishableKey: "sb_publishable_OkdY7wnzrBzEl-8qQvIfqw_GXYanCZ_"
 };
