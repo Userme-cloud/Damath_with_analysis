@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10213b"><title>DAMATH MathLab | Trainer Center</title>
+<style>
+:root{--navy:#0c1d37;--dark:#16324b;--ink:#13273e;--sub:#61748a;--cyan:#13b8bd;--mint:#a1f5db;--paper:#f3f7fb;--white:#fff;--line:#dce6ee;--good:#087d61;--bad:#b43b55}
+*{box-sizing:border-box}body{font:500 15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:var(--paper);margin:0}a{color:#05778c}button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+header{background:var(--navy);color:white}nav{max-width:1260px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:17px 24px;gap:12px;flex-wrap:wrap}.logo{display:flex;align-items:center;gap:12px;font-weight:900;font-size:1.12rem}.logo span{display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--mint));width:39px;height:39px;border-radius:12px;color:var(--navy);font-size:1.25rem}.navlinks{display:flex;align-items:center;gap:10px;flex-wrap:wrap}header a{color:#dcf6fb;text-decoration:none;font-weight:750}
+main{max-width:1260px;margin:0 auto;padding:30px 24px 70px}h1{font-size:clamp(1.65rem,3vw,2.5rem);margin:0 0 6px;letter-spacing:-.04em}h2{font-size:1.17rem;margin:0 0 14px;letter-spacing:-.025em}p{margin:7px 0}.sub{color:var(--sub);font-size:.88rem}.eyebrow{font-size:.72rem;color:#0a9295;font-weight:900;letter-spacing:.17em;text-transform:uppercase}
+.hero{margin-bottom:23px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}.tag{display:inline-block;background:#e3f5f5;border-radius:8px;padding:5px 9px;font-size:.72rem;font-weight:900;color:#0b797b}
+.panel{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:23px;box-shadow:0 12px 40px #102d4510;margin-bottom:20px}.hidden{display:none!important}
+label{display:block;font-weight:800;font-size:.83rem;margin:0 0 6px}input,select{border:1px solid #cbd8e4;padding:11px 12px;border-radius:10px;color:var(--ink);background:white;min-height:43px;width:100%}
+.btn{border:1px solid transparent;border-radius:11px;padding:11px 16px;font-weight:850;min-height:43px}.primary{background:linear-gradient(120deg,#29d1cf,#91ecc6);color:#092b38}.outline{border-color:#cad8e4;background:white;color:var(--ink)}.quiet{background:#eaf0f6;color:var(--ink)}
+.row{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.row>*{min-width:120px}.row .grow{flex:1}.gap{display:grid;gap:14px}.login{max-width:490px;margin:40px auto}.login .gap{gap:16px}
+.notice{padding:13px 15px;background:#eaf6fc;border:1px solid #c9e2f1;border-radius:12px;margin:14px 0;font-size:.86rem}.warning{background:#fff4e5;border-color:#edd3a2;color:#774c12}.error{background:#fff0f3;border-color:#efb8c5;color:#9c2447}.success{background:#e7fbf3;border-color:#b2e3cf;color:#046a4d}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:20px}.kpi{background:white;border:1px solid var(--line);padding:16px;border-radius:15px}.kpi strong{font-size:clamp(1.3rem,2.4vw,2rem);display:block;line-height:1.26}.kpi small{color:var(--sub);font-size:.76rem}
+.two{display:grid;grid-template-columns:1.3fr .8fr;gap:20px}.tools{display:flex;align-items:end;gap:10px;flex-wrap:wrap;margin-bottom:20px}.tools>label{min-width:150px}.tools .search{flex:1;min-width:180px}
+.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:740px}th,td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--line);font-size:.86rem}th{font-size:.72rem;color:#567087;letter-spacing:.05em;text-transform:uppercase}tr:last-child td{border:0}tbody tr:hover{background:#f4fafb}button.link{border:0;background:transparent;font-weight:900;color:#006d87;text-decoration:underline;cursor:pointer;padding:2px;text-align:left}
+.pill{display:inline-block;padding:3px 8px;border-radius:20px;background:#f0f4f8;color:#657990;font-size:.73rem;font-weight:850}.pill.active{background:#dbf9ee;color:#04734f}
+.bars{display:grid;gap:13px}.barrow{display:grid;grid-template-columns:100px 1fr 55px;align-items:center;gap:12px;font-size:.83rem}.track{background:#e9f0f5;border-radius:25px;height:12px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#19b7c9,#7ce4bf);border-radius:25px}
+.days{display:grid;grid-template-columns:repeat(14,1fr);gap:6px;align-items:end;min-height:150px;margin-top:16px}.day{min-width:0;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:5px;height:150px}.column{background:linear-gradient(0deg,#0f92a9,#72dbc7);border-radius:5px 5px 0 0;width:100%;min-height:3px}.day small{font-size:.6rem;color:#708197}.info{padding:12px 15px;background:#f1f7fc;border-radius:11px;color:#4d6379;font-size:.82rem}.sectionrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.details h2{margin:0}.detailsgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
+@media(max-width:1000px){.kpis{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:1fr}}
+@media(max-width:600px){main{padding:21px 14px 65px}nav{padding:14px}.kpis{grid-template-columns:repeat(2,1fr)}.panel{padding:16px}.detailsgrid{grid-template-columns:1fr}.tools>label{flex:1}}
+@media print{header,.tools,#logout,#loginPanel,#exportBtn,.btn{display:none!important}main{max-width:100%;padding:8px}body{background:white}.panel{box-shadow:none}}
+</style></head><body>
+<header><nav><div class="logo"><span>∑</span><div>DAMATH <span style="color:#8bead4;background:none;width:auto;height:auto;display:inline">MATHLAB</span><small style="display:block;color:#a4cad7;font-size:.64rem;letter-spacing:.12em">TRAINER CENTER</small></div></div><div class="navlinks"><a href="../index.html">← Player training website</a><button id="logout" class="btn outline hidden">Sign out</button></div></nav></header>
+<main>
+<section class="hero"><div><div class="eyebrow">Trainer Monitoring</div><h1>Player Practice &amp; Performance</h1><p class="sub">Understand who practices consistently, how often they train, and where they need support.</p></div><span class="tag">Authorized trainer access</span></section>
+<div id="banner" class="notice hidden" role="status"></div>
+<section id="loginPanel" class="panel login">
+<h2>Trainer sign in</h2><p class="sub">Only accounts approved in the DAMATH database can view learners' shared training reports.</p>
+<form id="loginForm" class="gap" style="margin-top:22px"><div><label for="email">Trainer email</label><input id="email" type="email" autocomplete="username" required placeholder="trainer@example.com"></div><div><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required></div><button id="loginBtn" class="btn primary" type="submit">Sign in to dashboard →</button></form>
+<p class="info" style="margin-top:22px">Student reports appear only after database setup and individual player consent. The dashboard does not collect data from learners who do not opt in.</p>
+</section>
+<section id="dashboard" class="hidden">
+<div class="tools"><label>Time period<select id="period"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option><option value="all">All time</option></select></label><label>Sort players<select id="sort"><option value="days">Most practice days</option><option value="sessions">Most sessions</option><option value="questions">Most calculations</option><option value="recent">Most recently active</option><option value="accuracy">Highest accuracy</option></select></label><label class="search">Find a player<input id="search" type="search" placeholder="Search name or grade…"></label><button class="btn outline" id="refreshBtn">↻ Refresh</button><button class="btn primary" id="exportBtn">Export CSV ↓</button></div>
+<div class="kpis" id="kpis"></div>
+<div class="two">
+<section class="panel"><div class="sectionrow"><h2>Practice consistency</h2><span class="sub">Sessions started each day · Last 14 days</span></div><div id="dailyChart" class="days"></div></section>
+<section class="panel"><h2>Accuracy by operation</h2><div id="operationBars" class="bars"></div></section>
+</div>
+<section class="panel"><div class="sectionrow"><h2>Learner participation ranking</h2><span class="sub" id="rosterCount"></span></div><p class="sub">“Recently active” means an answer was recorded within 5 minutes; it does not prove the browser is currently open. Rankings are by practice frequency, not just speed.</p><div class="tablewrap"><table><thead><tr><th>Player</th><th>Grade</th><th>Practice days</th><th>Sessions</th><th>Questions</th><th>Accuracy</th><th>Avg. speed</th><th>Last activity</th></tr></thead><tbody id="roster"></tbody></table></div></section>
+<section id="playerDetails" class="panel details hidden"><div class="sectionrow"><div><h2 id="detailName">Player</h2><p class="sub" id="detailMeta"></p></div><button class="btn outline" id="closeDetails">Close details</button></div><div id="detailMetrics" class="kpis" style="margin-top:17px"></div><div class="detailsgrid"><div><h2>Operation mastery</h2><div id="detailOperations" class="bars"></div></div><div><h2>Recent sessions</h2><div id="detailSessions"></div></div></div></section>
+<div class="info">Reports contain only student-approved training summaries. Values are based on submitted answers, not independent examination proctoring. Students using different browsers without an account will have separate identities.</div>
+</section>
+</main>
+<script src="../cloud-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const cfg=window.DAMATH_CLOUD_CONFIG||{};
+const ready=/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(cfg.url||'') && cfg.publishableKey && !/YOUR_|PLACEHOLDER/i.test(cfg.publishableKey);
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const n=x=>Number(x||0);
+const fmt=x=>Math.round(n(x)).toLocaleString('en-US');
+const pct=(a,b)=>b?Math.round(100*a/b)+'%':'—';
+const date=x=>x?new Date(x).toLocaleString('en-PH',{year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'—';
+const newer=x=>x&&Date.now()-Date.parse(x)<5*60*1000;
+const opLabels={add:'Addition',sub:'Subtraction',mul:'Multiplication',div:'Division',chain:'Capture chains',endgame:'Endgame'};
+let client=null, players=[], sessions=[], summaries=[];
+function message(text,type){const el=$('banner');el.textContent=text;el.className='notice'+(type?' '+type:'');}
+function clearMessage(){$('banner').classList.add('hidden');}
+function logoutView(){$('loginPanel').classList.remove('hidden');$('dashboard').classList.add('hidden');$('logout').classList.add('hidden');players=[];sessions=[];}
+function loginView(){$('loginPanel').classList.add('hidden');$('dashboard').classList.remove('hidden');$('logout').classList.remove('hidden');}
+if(!ready || !window.supabase){message('The trainer database is not connected yet. Configure cloud-config.js and run supabase-setup.sql first.','warning');return;}
+client=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{storageKey:'damath-trainer-auth-v1',persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+async function checkTrainer(){
+ const res=await client.rpc('damath_is_trainer');
+ if(res.error)throw res.error;
+ if(res.data!==true)throw new Error('This account is not approved as a DAMATH trainer.');
+}
+async function loadPages(table,sortField){
+ let out=[];
+ for(let i=0;i<40;i++){
+  const q=await client.from(table).select('*').order(sortField,{ascending:false}).range(i*500,i*500+499);
+  if(q.error)throw q.error;
+  const rows=q.data||[];
+  out=out.concat(rows);
+  if(rows.length<500)break;
+ }
+ return out;
+}
+async function refresh(){
+ $('refreshBtn').disabled=true;
+ try{
+  await checkTrainer();
+  const pair=await Promise.all([loadPages('damath_players','last_active_at'),loadPages('damath_sessions','started_at')]);
+  players=pair[0];sessions=pair[1];clearMessage();draw();
+ }catch(e){message('Could not load private class results: '+(e.message||'Unknown error'),'error');}
+ finally{$('refreshBtn').disabled=false;}
+}
+function periodSessions(){
+ const d=$('period').value;const cutoff=d==='all'?0:Date.now()-n(d)*86400000;
+ return sessions.filter(s=>Date.parse(s.started_at)>=cutoff);
+}
+function accumulate(rows){
+ const op={};let answered=0,correct=0,seconds=0;const activeDays=new Set();
+ for(const s of rows){
+  activeDays.add((s.started_at||'').slice(0,10));
+  answered+=n(s.answered);correct+=n(s.correct);seconds+=n(s.total_seconds);
+  for(const [k,v] of Object.entries(s.operation_stats||{})){
+   const a=op[k]||(op[k]={questions:0,correct:0,seconds:0});
+   a.questions+=n(v.questions);a.correct+=n(v.correct);a.seconds+=n(v.seconds);
+  }
+ }
+ return {sessions:rows.length,answered,correct,seconds,activeDays:activeDays.size,ops:op,accuracy:answered?Math.round(correct*100/answered):0,speed:answered?(seconds/answered).toFixed(1)+'s':'—'};
+}
+function filtered(){
+ const set=periodSessions(),query=$('search').value.toLowerCase().trim();
+ summaries=players.map(p=>{
+  const list=set.filter(s=>s.player_id===p.player_id);
+  const values=accumulate(list);
+  return {...values,profile:p,id:p.player_id,rows:list,
+    last:p.last_active_at,
+    lastInRange:list.reduce((max,s)=>s.last_activity_at>max?s.last_activity_at:max,'')};
+ }).filter(x=>!query||((x.profile.display_name||'')+' '+(x.profile.grade||'')).toLowerCase().includes(query));
+ const key=$('sort').value;
+ summaries.sort((a,b)=>{
+   const sortKeys={days:'activeDays',sessions:'sessions',questions:'answered',accuracy:'accuracy'};
+   if(key==='recent')return String(b.lastInRange).localeCompare(String(a.lastInRange));
+   const field=sortKeys[key]||'activeDays';
+   return n(b[field])-n(a[field]) || String(b.last).localeCompare(String(a.last));
+ });
+ return set;
+}
+function card(label,value){return '<div class="kpi"><small>'+esc(label)+'</small><strong>'+esc(value)+'</strong></div>';}
+function draw(){
+ const set=filtered(),totals=accumulate(set),recent=players.filter(p=>newer(p.last_active_at)).length;
+ $('kpis').innerHTML=[
+  card('Players enrolled',fmt(players.length)),card('Recently active (5 min)',fmt(recent)),
+  card('Sessions in period',fmt(set.length)),card('Calculations',fmt(totals.answered)),
+  card('Overall accuracy',pct(totals.correct,totals.answered))
+ ].join('');
+ $('rosterCount').textContent=summaries.length+' players';
+ $('roster').innerHTML=summaries.length?summaries.map((s,i)=>{
+  const p=s.profile;const latest=s.lastInRange||'';
+  return '<tr><td><button class="link" data-player="'+esc(s.id)+'">'+esc(p.display_name)+'</button> '+(newer(p.last_active_at)?'<span class="pill active">Recent</span>':'')+'</td>'+
+    '<td>'+esc(p.grade||'—')+'</td><td>'+fmt(s.activeDays)+'</td><td>'+fmt(s.sessions)+'</td><td>'+fmt(s.answered)+'</td><td>'+pct(s.correct,s.answered)+'</td><td>'+esc(s.speed)+'</td><td>'+esc(date(latest||p.last_active_at))+'</td></tr>';
+ }).join(''):'<tr><td colspan="8">No consenting players match these filters yet.</td></tr>';
+ document.querySelectorAll('[data-player]').forEach(b=>b.addEventListener('click',()=>showPlayer(b.dataset.player)));
+ renderBars('operationBars',totals.ops);
+ const days=[];const recentDays=new Map();
+ for(const s of sessions){
+  const k=(s.started_at||'').slice(0,10);recentDays.set(k,(recentDays.get(k)||0)+1);
+ }
+ for(let i=13;i>=0;i--){
+  const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-i);
+  const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  days.push({label:(d.getMonth()+1)+'/'+d.getDate(),value:recentDays.get(k)||0});
+ }
+ const max=Math.max(...days.map(d=>d.value),1);
+ $('dailyChart').innerHTML=days.map(d=>'<div class="day" title="'+d.label+': '+d.value+' sessions"><strong style="font-size:.62rem">'+d.value+'</strong><div class="column" style="height:'+Math.max(3,Math.round(d.value/max*97))+'px"></div><small>'+d.label+'</small></div>').join('');
+ // Hide details if selected player is outside the current roster.
+ if(!$('playerDetails').classList.contains('hidden') && $('playerDetails').dataset.id){
+  const x=summaries.find(p=>p.id===$('playerDetails').dataset.id);
+  if(x)showPlayer(x.id,false);else $('playerDetails').classList.add('hidden');
+ }
+}
+function renderBars(id,ops){
+ const names=['add','sub','mul','div','chain','endgame'];
+ $(''+id).innerHTML=names.map(k=>{
+  const r=ops[k];if(!r||!r.questions)return '';
+  const value=Math.round(r.correct*100/r.questions);
+  return '<div class="barrow"><span>'+opLabels[k]+'</span><div class="track"><div class="fill" style="width:'+value+'%"></div></div><strong>'+value+'%</strong></div>';
+ }).join('')||'<p class="sub">No recorded attempts in this period.</p>';
+}
+function showPlayer(id,scroll=true){
+ const s=summaries.find(x=>x.id===id);if(!s)return;
+ const el=$('playerDetails');el.classList.remove('hidden');el.dataset.id=s.id;
+ $('detailName').textContent=s.profile.display_name;
+ $('detailMeta').textContent=(s.profile.grade||'Grade not provided')+' • Last recorded activity: '+date(s.last);
+ $('detailMetrics').innerHTML=[
+  card('Days practiced',fmt(s.activeDays)),card('Sessions',fmt(s.sessions)),card('Answers',fmt(s.answered)),
+  card('Accuracy',pct(s.correct,s.answered)),card('Avg. answer time',s.speed)
+ ].join('');
+ renderBars('detailOperations',s.ops);
+ $('detailSessions').innerHTML=s.rows.slice().sort((a,b)=>String(b.started_at).localeCompare(String(a.started_at))).slice(0,10).map(x=>
+  '<div style="border-bottom:1px solid #e0e8ef;padding:10px 0"><strong>'+esc(x.mode)+'</strong> <span class="pill">'+(x.finished_at?'Finished':'In progress')+'</span><div class="sub">'+esc(date(x.started_at))+' · '+n(x.correct)+'/'+n(x.answered)+' correct · '+(x.answered?pct(x.correct,x.answered):'—')+'</div></div>'
+ ).join('')||'<p class="sub">No sessions during this period.</p>';
+ if(scroll)el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function csv(data){return data.map(r=>r.map(v=>{let x=String(v??'');if(/^[\s]*[=+@-]/.test(x))x="'"+x;return '"'+x.replace(/"/g,'""')+'"';}).join(',')).join('\r\n');}
+function download(){
+ const rows=[['Player','Grade','Practice days','Sessions','Calculations','Correct','Accuracy percent','Avg seconds','Last activity'],
+ ...summaries.map(s=>[s.profile.display_name,s.profile.grade,s.activeDays,s.sessions,s.answered,s.correct,s.accuracy,s.answered?(s.seconds/s.answered).toFixed(2):'',s.lastInRange||s.last])];
+ const blob=new Blob(['\uFEFF'+csv(rows)],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);
+ const link=document.createElement('a');link.href=url;link.download='damath-trainer-report.csv';link.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+$('loginForm').addEventListener('submit',async e=>{
+ e.preventDefault();$('loginBtn').disabled=true;message('Checking trainer credentials…');
+ try{
+  const r=await client.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
+  if(r.error)throw r.error;
+  await checkTrainer();$('password').value='';loginView();await refresh();
+ }catch(e){await client.auth.signOut();logoutView();message(e.message||'Unable to sign in.','error');}
+ finally{$('loginBtn').disabled=false;}
+});
+$('logout').onclick=async()=>{await client.auth.signOut();logoutView();message('Signed out.','success');};
+['period','sort','search'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',draw));
+$('refreshBtn').onclick=refresh;$('exportBtn').onclick=download;
+$('closeDetails').onclick=()=>{$('playerDetails').classList.add('hidden');delete $('playerDetails').dataset.id;};
+(async()=>{
+ try{const {data}=await client.auth.getUser();if(data.user){await checkTrainer();loginView();await refresh();}else logoutView();}
+ catch(e){logoutView();message('Please sign in with an authorized trainer account.','warning');}
+})();
+setInterval(()=>{if(!$('dashboard').classList.contains('hidden') && document.visibilityState==='visible')refresh();},60000);
+})();
+</script>
+</body></html>
