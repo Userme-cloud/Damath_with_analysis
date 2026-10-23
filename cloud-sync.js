@@ -157,7 +157,7 @@
     }
     let store;
     try { store = JSON.parse(localStorage.getItem('damath-mathlab-v1') || '{}'); } catch (_) { store = {}; }
-    const history = (store.sessions || []).filter(s => (s.name || '').trim().toLowerCase() === name.toLowerCase());
+    const history = (store.sessions || []).filter(s => (s.name || '').trim().toLowerCase() === name.toLowerCase()).sort((a,b)=>String(a.started).localeCompare(String(b.started)));
     if (!history.length) { status('No previous practice sessions were found locally for this player.'); return; }
     if (!window.confirm('Share ' + history.length + ' previously saved practice session(s) for "' + name + '" with your authorized trainer? Only those sessions and their summary statistics will be uploaded.')) return;
     for (const s of history) {
