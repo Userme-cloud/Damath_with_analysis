@@ -1,5 +1,7 @@
-/* DAMATH MathLab optional, consent-based student progress sync.
-   Reports never become public; Supabase RLS limits access to authorized trainers. */
+/* DAMATH MathLab school-managed automatic reporting for new drills.
+   Enrollment notices and required institutional/guardian permissions must precede use.
+   Previously private drill history is only shared on an explicit import action.
+   Supabase RLS limits results to authorized trainers. */
 (function () {
   'use strict';
   const $ = id => document.getElementById(id);
@@ -34,13 +36,15 @@
     const msg = String(error?.message || error || 'Network or permissions error');
     if (code === 'anonymous_provider_disabled' || /anonymous sign-ins are disabled/i.test(msg)) {
       authBlocked = true;
-      blockReason = 'Practice is saved locally, but online reporting is paused: Supabase rejected anonymous student sign-ins (HTTP 422). The trainer must enable and SAVE "Allow anonymous sign-ins" under Supabase > Authentication > Sign In / Providers. Then click Retry sharing here. Pending results will be kept.';
+      blockReason = 'Training results are safely queued locally: Supabase is currently rejecting student sign-ins (HTTP 422). The school trainer should verify and save “Allow anonymous sign-ins” in Supabase Authentication. Automatic attempts will resume, and Retry sharing is available.';
+      nextAttemptAt = Date.now() + 120000;
       status(blockReason, 'error');
       return;
     }
     if (/invalid.+apikey|api key/i.test(msg)) {
       authBlocked = true;
       blockReason = 'Online reporting is paused because the Supabase public connection key was rejected. Ask the website organizer to verify the GitHub cloud configuration. Practice is saved locally.';
+      nextAttemptAt = Date.now() + 120000;
       status(blockReason, 'error');
       return;
     }
@@ -55,7 +59,7 @@
     client = window.supabase.createClient(cfg.url, cfg.publishableKey, {
       auth: { storageKey: authStorageKey, persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
     });
-    status('Optional trainer sharing is available; results are only sent when you opt in.');
+    status('Trainer reporting is active: each new drill will automatically be sent to your authorized school trainer.');
   } else {
     status('Online reporting is unavailable because the cloud library or configuration is missing. Practice continues locally.', 'error');
   }
@@ -87,7 +91,7 @@
     };
   }
   function record(session, historic = false) {
-    if (!client || !session.cloudShare || !session.cloudId) return;
+    if (!client || !session.cloudId) return;
     const name = String(session.name || '').trim();
     if (!name) return;
     let owner;
@@ -100,13 +104,14 @@
     pending[session.cloudId] = { name, grade: session.cloudGrade || '', row: buildRow(session, historic) };
     persist();
     if (authBlocked) status(blockReason, 'error');
-    else status(count() + ' opted-in session(s) are queued for the trainer.');
+    else status(count() + ' practice session(s) are queued for automatic trainer upload.');
     flush();
   }
   async function flush(force = false) {
     if (!client || !navigator.onLine || count() === 0) return;
     if (flushing) { rerun = true; return; }
-    if (authBlocked && !force) return;
+    if (authBlocked && !force && Date.now() < nextAttemptAt) return;
+    if (authBlocked && Date.now() >= nextAttemptAt) { authBlocked = false; blockReason = ''; }
     if (!force && Date.now() < nextAttemptAt) return;
     if (force) { authBlocked = false; blockReason = ''; nextAttemptAt = 0; }
     flushing = true;
@@ -147,10 +152,6 @@
     }
   }
   function uploadSavedPractice() {
-    if (!$('cloudConsent')?.checked) {
-      status('Check "Share my training results with my trainer" before uploading saved practice.', 'error');
-      return;
-    }
     const name = $('playerName')?.value.trim();
     if (!name) { status('Enter your student name before uploading previous practice.', 'error'); return; }
     const owner = localStorage.getItem(ownerKey);
@@ -162,7 +163,7 @@
     try { store = JSON.parse(localStorage.getItem('damath-mathlab-v1') || '{}'); } catch (_) { store = {}; }
     const history = (store.sessions || []).filter(s => (s.name || '').trim().toLowerCase() === name.toLowerCase()).sort((a,b)=>String(a.started).localeCompare(String(b.started)));
     if (!history.length) { status('No previous practice sessions were found locally for this player.'); return; }
-    if (!window.confirm('Share ' + history.length + ' previously saved practice session(s) for "' + name + '" with your authorized trainer? Only those sessions and their summary statistics will be uploaded.')) return;
+    if (!window.confirm('These ' + history.length + ' earlier practice session(s) may have been created before automatic reporting was introduced. Do you have the necessary school and student/guardian permission to share these older records for "' + name + '" with the authorized trainer? Click OK only if authorized.')) return;
     for (const s of history) {
       if (!s.cloudId) s.cloudId = crypto.randomUUID();
     }
@@ -175,12 +176,10 @@
   window.DAMATHCloud = {
     enabled: !!client,
     started(session) {
-      session.cloudShare = !!$('cloudConsent')?.checked;
+      session.cloudShare = true; // Legacy field retained for compatibility; all NEW school-managed drills sync automatically.
       session.cloudGrade = $('playerGrade')?.value || '';
-      if (session.cloudShare) {
-        session.cloudId = crypto.randomUUID();
-        record(session);
-      }
+      session.cloudId = crypto.randomUUID();
+      record(session);
     },
     answered: record, finished: record,
     flush: () => flush(true),
@@ -194,8 +193,8 @@
   window.addEventListener('online', () => flush());
   document.addEventListener('visibilitychange', () => { if (!document.hidden) flush(); });
   if (client && count()) {
-    status(count() + ' previously opted-in practice report(s) are queued. Click Retry sharing after the trainer enables anonymous sign-ins.');
-    // Do not hammer Auth signup if this project still has anonymous sign-ins disabled.
+    status(count() + ' saved practice report(s) are pending automatic upload.');
     flush();
   }
+  if (client) window.setInterval(() => { if (navigator.onLine && !document.hidden && count()) flush(); }, 60000);
 })();
