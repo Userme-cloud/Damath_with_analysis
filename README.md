@@ -6,12 +6,12 @@
 
 The first site delivers integer DAMATH arithmetic drills. The separate Trainer Center summarizes participation and learning performance **only for learners who opt to share their results**.
 
-The student and trainer site code is committed to GitHub Pages. The Singapore Supabase project is now provisioned, its reporting tables and row-level security are installed, and `cloud-config.js` points to the project. **Authentication setup is now complete:** anonymous sign-ins are enabled and an email-confirmed trainer account is approved. Simulated authorization tests passed. **One real student drill must still be sent and checked in the trainer dashboard** to confirm end-to-end reporting. See [TRAINER_SETUP.md](TRAINER_SETUP.md) for final verification steps and [supabase-setup.sql](supabase-setup.sql) for the installed database schema.
+The student and trainer site code is committed to GitHub Pages. The Singapore Supabase project is now provisioned, its reporting tables and row-level security are installed, and `cloud-config.js` points to the project. **Current live issue (23 October 2026):** Trainer account is approved, but Supabase Auth logs show student signup failures (`422 anonymous_provider_disabled`). The earlier screenshot displayed an enabled switch, but the authentication service still treats the feature as disabled. **Re-enable/save anonymous sign-ins in the project settings, then retry queued uploads.** No class reports have reached the database yet. See [TRAINER_SETUP.md](TRAINER_SETUP.md) for final verification steps and [supabase-setup.sql](supabase-setup.sql) for the installed database schema.
 
 ## Student training
 - Four basic operations, 576 theoretical ordered arithmetic expressions, and DAMA score variants.
 - 11 selectable modes, shuffled four-option answers, correct answers revealed immediately.
-- 20 questions by default, 3-second auto-advance, speed mode, adaptive drills, and local progress.
+- 20 questions by default, 3-second auto-advance, speed mode, adaptive drills, local progress, and visible upload errors with consent-based retry/recovery.
 - Three-jump capture chains are arithmetic sequences, **not verified legal board capture paths**.
 - Player training works even if the cloud backend is not configured.
 
