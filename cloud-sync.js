@@ -91,7 +91,7 @@
     };
   }
   function record(session, historic = false) {
-    if (!client || !session.cloudId) return;
+    if (!client || !session.cloudId || !(session.answers || []).length) return;
     const name = String(session.name || '').trim();
     if (!name) return;
     let owner;
@@ -175,11 +175,17 @@
   }
   window.DAMATHCloud = {
     enabled: !!client,
+    canStart(name) {
+      let owner; try { owner = localStorage.getItem(ownerKey); } catch (_) { owner = null; }
+      if (!owner || owner.toLowerCase() === String(name).trim().toLowerCase()) return true;
+      status('This browser already reports practice for "' + owner + '". Use a different browser profile for another student so scores remain separate.', 'error');
+      return false;
+    },
     started(session) {
       session.cloudShare = true; // Legacy field retained for compatibility; all NEW school-managed drills sync automatically.
       session.cloudGrade = $('playerGrade')?.value || '';
       session.cloudId = crypto.randomUUID();
-      record(session);
+      status('Automatic trainer reporting is enabled for this drill. Your results will upload as you answer questions.');
     },
     answered: record, finished: record,
     flush: () => flush(true),
