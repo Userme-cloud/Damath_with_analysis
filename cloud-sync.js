@@ -10,7 +10,7 @@
   const ownerKey = 'damath-student-owner-v1';
   const authStorageKey = 'damath-student-auth-v1';
   let client = null, flushing = false, rerun = false, authBlocked = false;
-  let nextAttemptAt = 0, pending = {}, errorCount = 0;
+  let nextAttemptAt = 0, pending = {}, errorCount = 0, blockReason = '';
   try { pending = JSON.parse(localStorage.getItem(queueKey) || '{}') || {}; }
   catch (_) { pending = {}; }
 
@@ -34,12 +34,14 @@
     const msg = String(error?.message || error || 'Network or permissions error');
     if (code === 'anonymous_provider_disabled' || /anonymous sign-ins are disabled/i.test(msg)) {
       authBlocked = true;
-      status('Practice is saved locally, but online reporting is paused: Supabase rejected anonymous student sign-ins (HTTP 422). The trainer must enable and SAVE "Allow anonymous sign-ins" under Supabase > Authentication > Sign In / Providers. Then click Retry sharing here. Pending results will be kept.', 'error');
+      blockReason = 'Practice is saved locally, but online reporting is paused: Supabase rejected anonymous student sign-ins (HTTP 422). The trainer must enable and SAVE "Allow anonymous sign-ins" under Supabase > Authentication > Sign In / Providers. Then click Retry sharing here. Pending results will be kept.';
+      status(blockReason, 'error');
       return;
     }
     if (/invalid.+apikey|api key/i.test(msg)) {
       authBlocked = true;
-      status('Online reporting is paused because the Supabase public connection key was rejected. Ask the website organizer to verify the GitHub cloud configuration. Practice is saved locally.', 'error');
+      blockReason = 'Online reporting is paused because the Supabase public connection key was rejected. Ask the website organizer to verify the GitHub cloud configuration. Practice is saved locally.';
+      status(blockReason, 'error');
       return;
     }
     if (/already syncs for/i.test(msg)) {
@@ -97,7 +99,8 @@
     if (!owner) { try { localStorage.setItem(ownerKey, name); } catch (_) {} }
     pending[session.cloudId] = { name, grade: session.cloudGrade || '', row: buildRow(session, historic) };
     persist();
-    status(count() + ' opted-in session(s) are queued for the trainer.');
+    if (authBlocked) status(blockReason, 'error');
+    else status(count() + ' opted-in session(s) are queued for the trainer.');
     flush();
   }
   async function flush(force = false) {
@@ -105,7 +108,7 @@
     if (flushing) { rerun = true; return; }
     if (authBlocked && !force) return;
     if (!force && Date.now() < nextAttemptAt) return;
-    if (force) { authBlocked = false; nextAttemptAt = 0; }
+    if (force) { authBlocked = false; blockReason = ''; nextAttemptAt = 0; }
     flushing = true;
     try {
       let user;
