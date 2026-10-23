@@ -6,18 +6,19 @@ Trainer dashboard: https://userme-cloud.github.io/Damath_with_analysis/trainer/
 ## Status
 **Progress (22 October 2026):** Supabase project **DAMATH MathLab** was created in Singapore (ap-southeast-1), the three reporting tables and row-level security policies were deployed and checked, and the public browser settings in `cloud-config.js` now point to this project.
 
-**Authentication setup completed (22 October 2026):** Anonymous sign-ins are enabled (verified from the project settings screenshot), a permanent email/password trainer user has been created with confirmed email, and that user's UUID is approved in `damath_trainers`. Simulated Supabase role tests verified trainer access and anonymous-user rejection. **Real student-to-trainer sync is not yet tested**; complete the test below.
+**Issue found (23 October 2026):** The Supabase Auth service is returning `422 anonymous_provider_disabled` when students submit sign-ins. Its logs specifically say **Anonymous sign-ins are disabled**, despite an earlier green switch in the dashboard screenshot. There are still zero student auth identities, zero players and zero sessions. Trainer credentials and protected database reads are working. The current website now saves unsent results in a persistent queue, shows the error, and offers explicit retry and past-practice upload controls. **The anonymous signup setting must be saved and verified in the live project before reporting can resume.**
 
 Supabase project dashboard: https://supabase.com/dashboard/project/onkaculwnkodqglmqiaw
 
-## Final verification (administrator setup complete)
+## Fix anonymous student sign-ins and verify results
+1. Open [Supabase Authentication → Sign In / Providers](https://supabase.com/dashboard/project/onkaculwnkodqglmqiaw/auth/providers) for the **DAMATH MathLab** project's **main / Production** environment. Locate **Allow anonymous sign-ins**. Toggle it **off, then on again**, and **Save** the changes if prompted. Refresh the Supabase settings page to confirm the green setting persists.
+2. After GitHub Pages has updated, return to the [Student Training Website](https://userme-cloud.github.io/Damath_with_analysis/) and do a full refresh (**Ctrl + Shift + R**). The website now shows a visible warning when the authentication service rejects sign-ins.
+3. Enter the same player name, tick **Share my training results with my trainer**, and select **Retry sharing queued results** to resend earlier opted-in results from this browser. To share drills that were previously saved **without** the consent box checked, select **Share previously saved drills (optional)** and approve the explicit confirmation prompt. Nothing is uploaded without consent.
+4. When the student page says that practice reports were uploaded, open the [Trainer Center](https://userme-cloud.github.io/Damath_with_analysis/trainer/), sign in with your approved account and click **Refresh**. Verify the student row, accuracy and question totals.
+5. If a new retry still says **Anonymous sign-ins are disabled**, check the Supabase project and branch again; do not clear browser data or the pending session queue. The authentication service has not accepted the setting yet. Share the new error message so the live Auth logs can be checked again.
 
-1. Go to the [student website](https://userme-cloud.github.io/Damath_with_analysis/) using a **separate student browser profile**. Enter a test learner nickname and check **Share my training results with my trainer**. Answer a few questions and confirm the student page says results were sent.
-2. Open the [Trainer Center](https://userme-cloud.github.io/Damath_with_analysis/trainer/) using the trainer's own browser session. Sign in with the previously created authorized trainer email/password account and verify the test learner appears in the roster with correct answer counts.
-3. Compare the learner's recorded accuracy and question counts. Use the **Refresh** button, then check CSV export.
-4. For learners, enable appropriate school consent/guardian notices. Optional hardening: configure CAPTCHA/rate limits for anonymous sign-ins and enable leaked-password protection for trainers.
+**No need to recreate** the Supabase project, database tables or trainer authorization.
 
-**Already completed:** Supabase database provisioning, secure tables and RLS policies, GitHub public client configuration, enabled anonymous sign-ins, trainer user creation, trainer authorization, and simulated authorization checks. Do not repeat the setup unless intentionally migrating.
 
 ## What the trainer can see
 - Registered consenting players, grade (optional), practice days, number of sessions, calculations, last activity.
@@ -31,14 +32,14 @@ Supabase project dashboard: https://supabase.com/dashboard/project/onkaculwnkodq
 - **Consent is off by default.** Without consent, training remains local.
 - The trainer login requires authorization in the `damath_trainers` table. Client-side passwords are not stored in source code.
 - Students receive a per-browser anonymous ID from Supabase Auth; **one browser profile should correspond to one student**. Clearing browser storage or changing devices creates a new identity. For unified cross-device accounts, a future version should add verified student login.
-- Existing local-only practice history is not uploaded retrospectively. New opted-in drills produce shared records.
+- Previously opted-in results are queued automatically and can be retried. Old local-only practice history can be uploaded **only** when the student chooses the explicit historical sharing action and confirms consent.
 - This product stores practice summaries, not student IP logs, video, screenshots, or an activity feed.
 - For minors, follow school and parent/guardian consent requirements; allow students to use nicknames.
 - Protect your Supabase project and use only the publishable key publicly. Row-level security controls who can access results.
 - Anyone with GitHub access to the public repository can view the website source and public key, but **not private student rows** when RLS is configured properly.
 
 ## Troubleshooting
-- "Not configured": `cloud-config.js` still contains the placeholder values.
+- "Not configured": `cloud-config.js` contains an invalid project URL or key.
 - Trainer login works but access denied: verify the user signs in using the authorized trainer email and confirm the user ID exists in `damath_trainers`.
 - Students' results stay pending: check anonymous sign-in enabled, SQL schema installed, client key, RLS, and network connection.
 - One browser says it already syncs for another student: use a different browser profile to prevent merging learners.
