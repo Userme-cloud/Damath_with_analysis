@@ -29,7 +29,7 @@ label{display:block;font-weight:800;font-size:.83rem;margin:0 0 6px}input,select
 <section id="loginPanel" class="panel login">
 <h2>Trainer sign in</h2><p class="sub">Only accounts approved in the DAMATH database can view learners' shared training reports.</p>
 <form id="loginForm" class="gap" style="margin-top:22px"><div><label for="email">Trainer email</label><input id="email" type="email" autocomplete="username" required placeholder="trainer@example.com"></div><div><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required></div><button id="loginBtn" class="btn primary" type="submit">Sign in to dashboard →</button></form>
-<p class="info" style="margin-top:22px">Student reports appear only after database setup and individual player consent. The dashboard does not collect data from learners who do not opt in.</p>
+<p class="info" style="margin-top:22px">The school-managed student website now uploads each new drill automatically. Ensure students and guardians receive the required privacy notice and permissions before participation. Only authorized trainers can access these reports.</p>
 </section>
 <section id="dashboard" class="hidden">
 <div class="tools"><label>Time period<select id="period"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option><option value="all">All time</option></select></label><label>Sort players<select id="sort"><option value="days">Most practice days</option><option value="sessions">Most sessions</option><option value="questions">Most calculations</option><option value="recent">Most recently active</option><option value="accuracy">Highest accuracy</option></select></label><label class="search">Find a player<input id="search" type="search" placeholder="Search name or grade…"></label><button class="btn outline" id="refreshBtn">↻ Refresh</button><button class="btn primary" id="exportBtn">Export CSV ↓</button></div>
@@ -40,7 +40,7 @@ label{display:block;font-weight:800;font-size:.83rem;margin:0 0 6px}input,select
 </div>
 <section class="panel"><div class="sectionrow"><h2>Learner participation ranking</h2><span class="sub" id="rosterCount"></span></div><p class="sub">“Recently active” means an answer was recorded within 5 minutes; it does not prove the browser is currently open. Rankings are by practice frequency, not just speed.</p><div class="tablewrap"><table><thead><tr><th>Player</th><th>Grade</th><th>Practice days</th><th>Sessions</th><th>Questions</th><th>Accuracy</th><th>Avg. speed</th><th>Last activity</th></tr></thead><tbody id="roster"></tbody></table></div></section>
 <section id="playerDetails" class="panel details hidden"><div class="sectionrow"><div><h2 id="detailName">Player</h2><p class="sub" id="detailMeta"></p></div><button class="btn outline" id="closeDetails">Close details</button></div><div id="detailMetrics" class="kpis" style="margin-top:17px"></div><div class="detailsgrid"><div><h2>Operation mastery</h2><div id="detailOperations" class="bars"></div></div><div><h2>Recent sessions</h2><div id="detailSessions"></div></div></div></section>
-<div class="info">Reports contain only student-approved training summaries. Values are based on submitted answers, not independent examination proctoring. Students using different browsers without an account will have separate identities.</div>
+<div class="info">Reports contain school-managed practice summaries collected with the required institutional permissions. They are useful for coaching, not tamper-proof examination grades. Students using separate browsers will have separate identities even if their names match.</div>
 </section>
 </main>
 <script src="../cloud-config.js?v=20261023-2"></script>
@@ -137,7 +137,7 @@ function draw(){
   const p=s.profile;const latest=s.lastInRange||'';
   return '<tr><td><button class="link" data-player="'+esc(s.id)+'">'+esc(p.display_name)+'</button> '+(newer(p.last_active_at)?'<span class="pill active">Recent</span>':'')+'</td>'+
     '<td>'+esc(p.grade||'—')+'</td><td>'+fmt(s.activeDays)+'</td><td>'+fmt(s.sessions)+'</td><td>'+fmt(s.answered)+'</td><td>'+pct(s.correct,s.answered)+'</td><td>'+esc(s.speed)+'</td><td>'+esc(date(latest||p.last_active_at))+'</td></tr>';
- }).join(''):'<tr><td colspan="8">No consenting players match these filters yet.</td></tr>';
+ }).join(''):'<tr><td colspan="8">No recorded players match these filters yet.</td></tr>';
  document.querySelectorAll('[data-player]').forEach(b=>b.addEventListener('click',()=>showPlayer(b.dataset.player)));
  renderBars('operationBars',totals.ops);
  const days=[];const recentDays=new Map();
